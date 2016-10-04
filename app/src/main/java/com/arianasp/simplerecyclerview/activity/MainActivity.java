@@ -6,11 +6,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import com.arianasp.simplerecyclerview.JSONResponse;
+import com.arianasp.simplerecyclerview.JSONResponseData;
 import com.arianasp.simplerecyclerview.R;
-import com.arianasp.simplerecyclerview.adapter.DataAdapter;
-import com.arianasp.simplerecyclerview.interfaceapi.RequestInterface;
-import com.arianasp.simplerecyclerview.model.AndroidVersion;
+import com.arianasp.simplerecyclerview.adapter.DataAdapterTest;
+import com.arianasp.simplerecyclerview.interfaceapi.RequestInterfaceData;
+import com.arianasp.simplerecyclerview.model.DataVersion;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,8 +24,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView rv;
-    private ArrayList<AndroidVersion> data;
-    DataAdapter adapter;
+    private ArrayList<DataVersion> data;
+    DataAdapterTest adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,29 +38,54 @@ public class MainActivity extends AppCompatActivity {
         rv.setHasFixedSize(true);
         RecyclerView.LayoutManager rvLay = new LinearLayoutManager(getApplicationContext());
         rv.setLayoutManager(rvLay);
-        loadJSON();
+//        loadJSON();
+        loadJSONData();
     }
+//
+//    private void loadJSON(){
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://api.learn2crack.com/")
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build();
+//        RequestInterface req =retrofit.create(RequestInterface.class);
+//        Call<JSONResponse> call = req.getJSON();
+//        call.enqueue(new Callback<JSONResponse>() {
+//            @Override
+//            public void onResponse(Call<JSONResponse> call, Response<JSONResponse> response) {
+//                JSONResponse jsonres = response.body();
+//                data = new ArrayList<AndroidVersion>(Arrays.asList(jsonres.getAndroid()));
+//                adapter = new DataAdapter(data);
+//                rv.setAdapter(adapter);
+//            }
+//
+//            @Override
+//            public void onFailure(Call<JSONResponse> call, Throwable t) {
+//                Log.d("Error", t.getMessage());
+//            }
+//        });
+//    }
 
-    private void loadJSON(){
+    private void loadJSONData(){
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.learn2crack.com/")
+                .baseUrl("192.168.1.210:8000")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        RequestInterface req =retrofit.create(RequestInterface.class);
-        Call<JSONResponse> call = req.getJSON();
-        call.enqueue(new Callback<JSONResponse>() {
+        RequestInterfaceData request =retrofit.create(RequestInterfaceData.class);
+        Call<JSONResponseData> call = request.getJSONData();
+        call.enqueue(new Callback<JSONResponseData>() {
             @Override
-            public void onResponse(Call<JSONResponse> call, Response<JSONResponse> response) {
-                JSONResponse jsonres = response.body();
-                data = new ArrayList<AndroidVersion>(Arrays.asList(jsonres.getAndroid()));
-                adapter = new DataAdapter(data);
+            public void onResponse(Call<JSONResponseData> call, Response<JSONResponseData> response) {
+                JSONResponseData jsonres = response.body();
+                data = new ArrayList<DataVersion>(Arrays.asList(jsonres.getData()));
+                adapter = new DataAdapterTest(data);
                 rv.setAdapter(adapter);
             }
 
             @Override
-            public void onFailure(Call<JSONResponse> call, Throwable t) {
+            public void onFailure(Call<JSONResponseData> call, Throwable t) {
                 Log.d("Error", t.getMessage());
             }
+
         });
     }
 }

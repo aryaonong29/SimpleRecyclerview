@@ -12,4 +12,6 @@ public class JSONResponse {
     public AndroidVersion[] getAndroid() {
         return android;
     }
+
+
 }
